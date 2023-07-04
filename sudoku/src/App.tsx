@@ -11,7 +11,8 @@ interface optionsObject {
 // Interface for objects that make up the elements of the board.
 interface boardObject {
   val: number,
-  index: number
+  index: number,
+  isStatic: boolean
 }
 
 const App = () => {
@@ -23,7 +24,7 @@ const App = () => {
     for (let i: number = 0; i < 9; i++) {
       b.push([]);
       for (let j: number = 0; j < 9; j++) {
-        b[i].push({val: 0, index: (i * 9) + j});
+        b[i].push({val: 0, index: (i * 9) + j, isStatic: false});
       }
     }
 
@@ -32,7 +33,10 @@ const App = () => {
   
   // The board that will be edited and changed to solve the sudoku.
   // Needed to make 2D array of special objects that have unqiue indexs.
-  var [board, setBoard] = useState<boardObject[][]>(createBoard());
+  let [board, setBoard] = useState<boardObject[][]>(createBoard());
+
+  // 0 = easy, 1 = medium, 2 = hard
+  let [curDiff, setCurDiff] = useState<number>(0);
 
   // Used for check button press.
   const [solved, setSolved] = useState<boolean>(false);
@@ -44,10 +48,7 @@ const App = () => {
   const difficulties: string[] = ['Easy', 'Medium', 'Hard'];
 
   // Used for animation after solving board.
-  var animations: number[][] = [];
-
-  // This might be removed.
-  useEffect(() => {generateEasy()},[]);
+  let animations: number[][] = [];
   
   // Used to render options buttons and their colors. 
   const options: optionsObject[] = [
@@ -60,6 +61,9 @@ const App = () => {
       brdrClr: '#f30cba'
     }
   ];
+
+  // Set initial board difficulty to easy.
+  useEffect(() => { generateEasy() }, []);
 
   // Switch to chosen difficuly.
   const chooseDifficulty = (diff: number): void => {
@@ -81,7 +85,7 @@ const App = () => {
 
   // Switch to choose option.
   const optionsLogic = (option: string) => {
-    var result: boolean;
+    let result: boolean;
     switch (option) {
       case 'Solve':
         solveBoard();
@@ -107,8 +111,10 @@ const App = () => {
       for (let i: number = 0; i < 9; i++) {
         for (let j: number = 0; j < 9; j++) {
           b[i][j].val = data.board[i][j];
+          if ( b[i][j].val ) { b[i][j].isStatic = true; }
         }
       }
+      setCurDiff(0);
       setBoard(b);
     })
     .catch(error => {
@@ -125,8 +131,10 @@ const App = () => {
       for (let i: number = 0; i < 9; i++) {
         for (let j: number = 0; j < 9; j++) {
           b[i][j].val = data.board[i][j];
+          if ( b[i][j].val ) { b[i][j].isStatic = true; }
         }
       }
+      setCurDiff(1);
       setBoard(b);
     })
     .catch(error => {
@@ -143,8 +151,10 @@ const App = () => {
       for (let i: number = 0; i < 9; i++) {
         for (let j: number = 0; j < 9; j++) {
           b[i][j].val = data.board[i][j];
+          if ( b[i][j].val ) { b[i][j].isStatic = true; }
         }
       }
+      setCurDiff(2);
       setBoard(b);
     })
     .catch(error => {
@@ -232,36 +242,37 @@ const App = () => {
   }
 
   // Goes through the animations array and shows the process on the board.
-  const animate = (boardCopy: boardObject[][]): void => {
+  const animate = (): void => {
     let inputs: HTMLInputElement[] = Array.from(document.querySelectorAll('input'));
-    let inputsObject: {[key: string]: HTMLInputElement} = {};
+    let inputsDict: {[key: string]: HTMLInputElement} = {};
     
     for (let input of inputs) {
-      inputsObject[input.name] = input;
+      inputsDict[input.name] = input;
     }
     
     let kft: number = 0;
-    let animationSpeed: number = 1;
+    let animationSpeed: number = 1.5;
     
     for (const x of animations) {
       setTimeout(() => {
         if (x[1] === 0) {
-          inputsObject[x[0].toString()].value = '';
+          inputsDict[x[0].toString()].value = '';
         } else {
-          inputsObject[x[0].toString()].value = x[1].toString();
+          inputsDict[x[0].toString()].value = x[1].toString();
         }
       }, (kft * 4));
       kft += animationSpeed;
     }
 
     animations = [];
+    setBoard(board);
   }
 
   // Solves the board and does animation.
   const solveBoard = (): void => {
     var boardCopy: boardObject[][] = JSON.parse(JSON.stringify(board));
     solve(boardCopy);
-    animate(boardCopy);
+    animate();
   }
 
   // Used for on change event from input in grid.
@@ -278,14 +289,33 @@ const App = () => {
     setBoard(board);
   }
 
+  // Sets all non-static values in board to empty.
+  const clearBoard = (): void => {
+    let inputs: HTMLInputElement[] = Array.from(document.querySelectorAll('input'));
+
+    for (let input of inputs) { input.value = ''; }
+
+    for (let i: number = 0; i < 9; i++) {
+      for (let j: number = 0; j < 9; j++) {
+        if (!board[i][j].isStatic) { board[i][j].val = 0; }
+      }
+    }
+
+    setSolved(false);
+    setNewBoard(true);
+    setBoard(board);
+  }
+
   return (
     <div className='container'>
       <header id='header'>
         <h1>Sudoku</h1>
+        <h2 key={curDiff}>Difficulty: {curDiff === 0 ? 'Easy': curDiff === 1 ? 'Medium' : 'Hard'}</h2>
         <div id='header-button-container'>
           {difficulties.map((diffs: string, ind: number) => (
             <button className='diff-button' key={ind} onClick={() => chooseDifficulty(ind)}>{diffs}</button>
           ))}
+          <button className='diff-button' style={{borderColor: '#26f7fd'}} onClick={() => clearBoard()}>Clear</button>
           {options.map((option: optionsObject) => (
             <button className='diff-button' style={{borderColor: option.brdrClr}}
             key={option.title} onClick={() => optionsLogic(option.title)}>{option.title}</button>
@@ -301,7 +331,7 @@ const App = () => {
               <tr>
                 {row.map((col: boardObject, j: number) => (
                   <td>
-                    {col.val ? col.val
+                    {col.isStatic ? col.val
                      : <input name={col.index.toString()} onChange={(e) => updateBoard(e, i, j)}></input>}
                   </td>
                 ))}

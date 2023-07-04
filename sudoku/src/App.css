@@ -14,7 +14,12 @@
 
 h1 {
   font-size: 64px;
-  margin: 16px 0;
+  margin: 8px 0;
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 16px;
 }
 
 #header-button-container {
@@ -92,7 +97,10 @@ input:focus {
 @media only screen and (max-width: 600px) {
   h1 {
     font-size: 48px;
-    margin: 12px 0;
+  }
+
+  h2 {
+    font-size: 16px;
   }
 
   .diff-button {
@@ -156,7 +164,10 @@ input:focus {
 
   h1 {
     font-size: 48px;
-    margin: 12px 0;
+  }
+
+  h2 {
+    font-size: 16px;
   }
 
   .diff-button {
