@@ -43,6 +43,9 @@ const App = () => {
 
   // Used to help solved state in button on click event.
   const [newBoard, setNewBoard] = useState<boolean>(true);
+
+  // used to initially show loading screen until get request is completed.
+  let [loading, setLoading] = useState<boolean>(true);
   
   // Used to render difficulty buttons.
   const difficulties: string[] = ['Easy', 'Medium', 'Hard'];
@@ -102,24 +105,22 @@ const App = () => {
     }
   }
 
-  // Api requet for easy board.
-  const generateEasy = (): void => {
-    fetch('https://sugoku.onrender.com/board?difficulty=easy')
-    .then(response => response.json())
-    .then(data => {
-      let b: boardObject[][] = createBoard();
-      for (let i: number = 0; i < 9; i++) {
-        for (let j: number = 0; j < 9; j++) {
-          b[i][j].val = data.board[i][j];
-          if ( b[i][j].val ) { b[i][j].isStatic = true; }
-        }
+  // Api request for easy board.
+  async function generateEasy(): Promise<void> {
+    const response: Response = await fetch('https://sugoku.onrender.com/board?difficulty=easy');
+    const data = await response.json();
+    setLoading(false);
+
+    let b: boardObject[][] = createBoard();
+    for (let i: number = 0; i < 9; i++) {
+      for (let j: number = 0; j < 9; j++) {
+        b[i][j].val = data.board[i][j];
+        if ( b[i][j].val ) { b[i][j].isStatic = true; }
       }
-      setCurDiff(0);
-      setBoard(b);
-    })
-    .catch(error => {
-      console.log('Error: ', error);
-    })
+    }
+    setCurDiff(0);
+    setBoard(b);
+    console.log(board)
   }
 
   // Api request for medium board.
@@ -304,6 +305,16 @@ const App = () => {
     setSolved(false);
     setNewBoard(true);
     setBoard(board);
+  }
+
+  // Resolved after init api get request.
+  if (loading) {
+    return ( 
+      <div id='loading-container'>
+        <i className="fa fa-repeat fa-spin" id='loading-icon'></i>
+        <h1>Loading</h1>
+      </div>
+    );
   }
 
   return (

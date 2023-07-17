@@ -94,6 +94,22 @@ input:focus {
   text-align: center;
 }
 
+#loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  width: 100vw;
+  height: 100vh;
+  row-gap: 50px;
+  column-gap: 0;
+}
+
+#loading-icon {
+  font-size: 300px;
+}
+
 @media only screen and (max-width: 600px) {
   h1 {
     font-size: 48px;
@@ -116,6 +132,10 @@ input:focus {
   #header-button-container {
     column-gap: 12px;
     margin-bottom: 12px;
+  }
+
+  #loading-icon {
+    font-size: 250px;
   }
 
   table {
