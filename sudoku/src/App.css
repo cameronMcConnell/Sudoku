@@ -5,6 +5,22 @@
   height: inherit;
 }
 
+.bottom-border {
+  border-bottom: 5px solid black;
+}
+
+.right-border {
+  border-right: 5px solid black;
+}
+
+.top-border {
+  border-top: 5px solid black;
+}
+
+.left-border {
+  border-left: 5px solid black;
+}
+
 #header {
   display: flex;
   flex-direction: column;
@@ -155,6 +171,22 @@ input:focus {
     align-items: flex-start;
     margin-top: 48px;
   }
+
+  .bottom-border {
+    border-bottom: 3px solid black;
+  }
+  
+  .right-border {
+    border-right: 3px solid black;
+  }
+  
+  .top-border {
+    border-top: 3px solid black;
+  }
+  
+  .left-border {
+    border-left: 3px solid black;
+  }
 }
 
 @media only screen and (max-width: 800px) and (min-width: 601px) and (min-height: 900px) {
@@ -170,6 +202,22 @@ input:focus {
 
   td { 
     font-size: 24px;
+  }
+
+  .bottom-border {
+    border-bottom: 3px solid black;
+  }
+  
+  .right-border {
+    border-right: 3px solid black;
+  }
+  
+  .top-border {
+    border-top: 3px solid black;
+  }
+  
+  .left-border {
+    border-left: 3px solid black;
   }
 }
 
@@ -216,5 +264,21 @@ input:focus {
 
   td {
     font-size: 16px;
+  }
+
+  .bottom-border {
+    border-bottom: 3px solid black;
+  }
+  
+  .right-border {
+    border-right: 3px solid black;
+  }
+  
+  .top-border {
+    border-top: 3px solid black;
+  }
+  
+  .left-border {
+    border-left: 3px solid black;
   }
 }

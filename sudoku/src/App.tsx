@@ -120,7 +120,6 @@ const App = () => {
     }
     setCurDiff(0);
     setBoard(b);
-    console.log(board)
   }
 
   // Api request for medium board.
@@ -307,6 +306,24 @@ const App = () => {
     setBoard(board);
   }
 
+  // Decides classname for td elements given index values.
+  const determineClassName = (i: number, j: number): string => {
+    let className: string = '';
+    if (!((i + 1) % 3)) {
+      className += 'bottom-border';
+    }
+    if (!((j + 1) % 3)) {
+      className += ' right-border';
+    }
+    if (!i) {
+      className += ' top-border'
+    }
+    if (!j) {
+      className += ' left-border'
+    }
+    return className;
+  }
+
   // Resolved after init api get request.
   if (loading) {
     return ( 
@@ -341,7 +358,7 @@ const App = () => {
             {board.map((row: boardObject[], i: number) => (
               <tr>
                 {row.map((col: boardObject, j: number) => (
-                  <td>
+                  <td className={determineClassName(i, j)}>
                     {col.isStatic ? col.val
                      : <input name={col.index.toString()} onChange={(e) => updateBoard(e, i, j)}></input>}
                   </td>
