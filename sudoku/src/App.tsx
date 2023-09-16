@@ -46,6 +46,9 @@ const App = () => {
 
   // used to initially show loading screen until get request is completed.
   let [loading, setLoading] = useState<boolean>(true);
+
+  // Make sure that you can't clear the board when it is being solved.
+  let [solving, setSolving] = useState<boolean>(false);
   
   // Used to render difficulty buttons.
   const difficulties: string[] = ['Easy', 'Medium', 'Hard'];
@@ -70,6 +73,7 @@ const App = () => {
 
   // Switch to chosen difficuly.
   const chooseDifficulty = (diff: number): void => {
+    if (solving) { return; }
     setNewBoard(true);
     setSolved(false);
 
@@ -88,15 +92,16 @@ const App = () => {
 
   // Switch to choose option.
   const optionsLogic = (option: string) => {
+    if (solving || solved) { return; }
     let result: boolean;
     switch (option) {
       case 'Solve':
+        setSolving(true);
         solveBoard();
-        setNewBoard(false);
-        setSolved(true);
         break;
       case 'Check':
-        result= checkSolution();
+        if (solving) { break; }
+        result = checkSolution();
         setNewBoard(false);
         if (result) {
           setSolved(true);
@@ -209,9 +214,9 @@ const App = () => {
     var i0: number = Math.floor(i / 3) * 3;
     var j0: number = Math.floor(j / 3) * 3;
 
-    for (let l: number = 0; l < 3; l++) {
-      for (let m: number = 0; m < 0; m++) {
-        if (boardCopy[i + i0][j + j0].val === val) {
+    for (let l: number = i0; l < i0+3; l++) {
+      for (let m: number = j0; m < j0+3; m++) {
+        if (boardCopy[l][m].val === val) {
           return false;
         }
       }
@@ -241,7 +246,7 @@ const App = () => {
     return true;
   }
 
-  // Goes through the animations array and shows the process on the board.
+  // Goes through the animations array and show the process on the board.
   const animate = (): void => {
     let inputs: HTMLInputElement[] = Array.from(document.querySelectorAll('input'));
     let inputsDict: {[key: string]: HTMLInputElement} = {};
@@ -264,13 +269,26 @@ const App = () => {
       kft += animationSpeed;
     }
 
-    animations = [];
-    setBoard(board);
+    setTimeout(() => {
+      animations = [];
+      setSolving(false);
+      setBoard(board);
+      setNewBoard(false);
+      setSolved(true);
+    }, (kft * 4));
+
   }
 
   // Solves the board and does animation.
   const solveBoard = (): void => {
     var boardCopy: boardObject[][] = JSON.parse(JSON.stringify(board));
+    for (let i: number = 0; i < 9; i++) {
+      for (let j: number = 0; j < 9; j++) {
+        if (!boardCopy[i][j].isStatic)
+          boardCopy[i][j].val = 0;
+      }
+    }
+    setBoard(boardCopy);
     solve(boardCopy);
     animate();
   }
@@ -291,6 +309,8 @@ const App = () => {
 
   // Sets all non-static values in board to empty.
   const clearBoard = (): void => {
+    if (solving) { return; }
+    console.log(solving);
     let inputs: HTMLInputElement[] = Array.from(document.querySelectorAll('input'));
 
     for (let input of inputs) { input.value = ''; }
