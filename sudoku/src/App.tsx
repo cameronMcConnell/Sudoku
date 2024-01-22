@@ -296,13 +296,15 @@ const App = () => {
   // Used for on change event from input in grid.
   const updateBoard = (e: React.ChangeEvent<HTMLInputElement>, i: number, j: number) => {
     e.preventDefault();
-    let inputVal: number | undefined = parseInt(e.target.value);
+    let inputVal: number | undefined = parseInt(e.target.value.slice(-1));
     
-    if (inputVal && inputVal < 10 && inputVal > -1 ) {
+    if (!Number.isNaN(inputVal) && inputVal < 10 && inputVal > -1 ) {
+      e.target.value = inputVal.toString();
       board[i][j].val = inputVal;
-    } else {
+    } else { 
+      e.target.value = '0'; 
       board[i][j].val = 0;
-    }
+    } 
     
     setBoard(board);
   }
@@ -380,7 +382,12 @@ const App = () => {
                 {row.map((col: boardObject, j: number) => (
                   <td className={determineClassName(i, j)}>
                     {col.isStatic ? col.val
-                     : <input name={col.index.toString()} onChange={(e) => updateBoard(e, i, j)}></input>}
+                     : <input type='number' 
+                        min={0}
+                        max={9}
+                        name={col.index.toString()} 
+                        onChange={(e) => updateBoard(e, i, j)}
+                        /> }
                   </td>
                 ))}
               </tr>
