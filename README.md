@@ -15,7 +15,7 @@ Sudoku is a popular game played by millions worldwide, this project brings it to
 ### Installing
 
 * To install, copy or fork the repository into your personal development environment and then run:
-```npm install```
+* ```npm install```
 
 ### Executing program
 
