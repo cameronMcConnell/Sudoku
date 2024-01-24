@@ -4,7 +4,7 @@ Fully functional sudoku board that lets you select between easy, medium, and har
 
 ## Description
 
-Sudoku is a popular game played by millions worldwide, this project brings it to your web browser. Developed with React.js for the front-end, this project as well leverages a Go api [suGoku](https://github.com/bertoort/sugoku) for generating easy, medium, and hard sudoku boards. Included with the gameplay, there are additonal features such as clearing, solving, and checking the correctness of your solution given the current board. Hosted using GitHub Pages, the link for the web app can be found [here](https://cameronmcconnell.github.io/Sudoku/). If you are interested in contributing to the project, my contact details can be found below in the Authors section. Happy Hacking!
+Sudoku is a popular game played by millions worldwide, this project brings it to your web browser. Developed with React.js for the front-end, this project also leverages a Go api [suGoku](https://github.com/bertoort/sugoku) for generating easy, medium, and hard sudoku boards. Included with the gameplay, there are additional features such as clearing, solving, and checking the correctness of your solution given the current board. Hosted using GitHub Pages, the link for the web app can be found [here](https://cameronmcconnell.github.io/Sudoku/). If you are interested in contributing to the project, my contact details can be found below in the Authors section. Happy Hacking!
 
 ## Getting Started
 
